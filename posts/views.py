@@ -53,10 +53,13 @@ class PostPrivateView(APIView):
         serializer_private_post = PostSerializer(private_posts, many=True)
         public_post = Post.objects.all().filter(private=False)
         serializer_public_post = PostSerializer(public_post, many=True)
-        ipdb.set_trace()
+        # juntando posts publicos e privados
         posts = serializer_private_post.data + serializer_public_post.data
-
-        return Response(posts)
+        # organiza pelos posts em ordem cronologica
+        sorted_list_posts = sorted(
+            posts, key=lambda k: k['posted_on'])
+        # retornar do post mais atual para o mais antigo reverter lista
+        return Response(sorted_list_posts[::-1])
 
 
 class CommentView(APIView):
