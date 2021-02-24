@@ -57,6 +57,12 @@ class UserIdView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
+    def get(self, request,  id: int):
+        queryset = User.objects.get(id=id)
+        serializer = UserSerializer(queryset)
+
+        return Response(serializer.data)
+
     def post(self, request,  id: int):
 
         user_to_follow = User.objects.get(id=id)

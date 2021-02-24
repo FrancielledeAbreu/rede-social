@@ -14,7 +14,7 @@ class PostView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        queryset = Post.objects.all()
+        queryset = Post.objects.all().filter(private=False)
         serializer = PostSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -28,11 +28,35 @@ class PostView(APIView):
         current_user = request.user
 
         post = Post.objects.get_or_create(
-            title=request.data['title'], description=request.data['description'], image=request.data['image'], author=current_user)[0]
+            **request.data,  author=current_user)[0]
 
         serializer = PostSerializer(post)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class PostPrivateView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        posts = Post.objects.all()
+
+        user_following = request.user.following.all()
+        # quem o user logado segue
+        # pegando apenas os ids
+        ids = user_following.values_list('id', flat=True)
+
+        # pode ver os posts de quem segue, quem o author_id está na lista de ids do user logado
+        private_posts = posts.filter(author_id__in=ids).filter(private=True)
+
+        serializer_private_post = PostSerializer(private_posts, many=True)
+        public_post = Post.objects.all().filter(private=False)
+        serializer_public_post = PostSerializer(public_post, many=True)
+        ipdb.set_trace()
+        posts = serializer_private_post.data + serializer_public_post.data
+
+        return Response(posts)
 
 
 class CommentView(APIView):
@@ -60,7 +84,7 @@ class CommentIdView(APIView):
         post = Post.objects.get(id=id)
 
         comment = Comment.objects.get_or_create(
-            comment=request.data['comment'], image=request.data['image'], author=current_user, post=post)[0]
+            **request.data, author=current_user, post=post)[0]
 
         serializer = CommentSerializer(comment)
 
