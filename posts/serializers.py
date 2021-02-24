@@ -12,6 +12,11 @@ class CommentSerializer(serializers.Serializer):
     commented_on = serializers.DateTimeField(read_only=True)
 
 
+class LikeSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    author = UserSerializer(read_only=True)
+
+
 class PostSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     author = UserSerializer(read_only=True)
@@ -22,3 +27,4 @@ class PostSerializer(serializers.Serializer):
     posted_on = serializers.DateTimeField(read_only=True)
     private = serializers.BooleanField(default=False)
     comment = CommentSerializer(many=True, read_only=True)
+    like = LikeSerializer(many=True, read_only=True)
