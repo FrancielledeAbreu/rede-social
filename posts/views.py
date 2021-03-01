@@ -6,6 +6,7 @@ from .models import Post, Comment, Like
 from .serializers import PostSerializer, CommentSerializer, LikeSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
+from guardian.shortcuts import assign_perm
 import ipdb
 
 
@@ -30,6 +31,7 @@ class PostView(APIView):
         post = Post.objects.get_or_create(
             **request.data,  author=current_user)[0]
 
+        assign_perm('author', current_user, post)
         serializer = PostSerializer(post)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -114,3 +116,25 @@ class LikeIdView(APIView):
         serializer = LikeSerializer(like)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def put(self, request,  id: int):
+        post = Post.objects.get(id=id)
+
+        if not request.user.has_perm('posts.author', post):
+            return Response({'errors': 'you are not author of this post'}, status=status.HTTP_403_FORBIDDEN)
+
+        if request.data.get('title'):
+            post.title = request.data['title']
+
+        if request.data.get('description'):
+            post.description = request.data['description']
+
+        if request.data.get('image'):
+            post.image = request.data['image']
+
+        if request.data.get('private'):
+            post.private = request.data['private']
+
+        post.save()
+        serializer = PostSerializer(post)
+        return Response(serializer.data, status=status.HTTP_200_OK)
