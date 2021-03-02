@@ -44,9 +44,6 @@ class LoginView(APIView):
 
 
 class UserView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
     def get(self, request):
         queryset = User.objects.all()
         serializer = UserSerializer(queryset, many=True)
@@ -54,9 +51,6 @@ class UserView(APIView):
 
 
 class UserIdView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
     def get(self, request,  id: int):
         queryset = User.objects.get(id=id)
         serializer = UserSerializer(queryset)
