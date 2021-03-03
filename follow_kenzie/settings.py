@@ -26,7 +26,7 @@ SECRET_KEY = 'zynk79!%3f$i#&$^3z#%d$t#6cq9m+eou1$t5)hlcoy50nfq80'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['follow-kenzie.herokuapp.com']
+ALLOWED_HOSTS = ['follow-kenzie.herokuapp.com', 'localhost']
 
 
 # Application definition
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'posts',
     'comments',
     'likes',
+    'notification',
     'guardian',
     'rest_framework.authtoken'
 ]

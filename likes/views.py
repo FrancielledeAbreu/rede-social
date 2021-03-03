@@ -7,6 +7,7 @@ from .serializers import LikeSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from posts.models import Post
+from notification.models import Notification
 from posts.serializers import PostSerializer
 import ipdb
 
@@ -28,6 +29,8 @@ class LikeIdView(APIView):
         like = Like.objects.get_or_create(
             author=current_user, post=post)[0]
 
+        notification = Notification.objects.create(user=post.author, author_id=current_user.id,
+                                                   message_type="Like", text=f'Você recebeu um like de {current_user.username}')
         serializer = LikeSerializer(like)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
