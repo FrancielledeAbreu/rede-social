@@ -7,6 +7,7 @@ from .serializers import PostSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from guardian.shortcuts import assign_perm
+from django.core.exceptions import ObjectDoesNotExist
 import ipdb
 
 
@@ -62,3 +63,16 @@ class PostPrivateView(APIView):
             posts, key=lambda k: k['posted_on'])
         # retornar do post mais atual para o mais antigo reverter lista
         return Response(sorted_list_posts[::-1])
+
+
+class FeedView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            queryset = Post.objects.filter(author=request.user)
+            serializer = PostSerializer(queryset, many=True)
+            return Response(serializer.data)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework import serializers, status
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Like
@@ -9,6 +9,7 @@ from rest_framework.authentication import TokenAuthentication
 from posts.models import Post
 from notification.models import Notification
 from posts.serializers import PostSerializer
+from django.core.exceptions import ObjectDoesNotExist
 import ipdb
 
 
@@ -56,3 +57,17 @@ class LikeIdView(APIView):
         post.save()
         serializer = PostSerializer(post)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def delete(self, request, id: int):
+
+        try:
+            post = Post.objects.get(id=id)
+            if not request.user.has_perm('posts.author', post):
+                return Response({'errors': 'you are not author of this post'}, status=status.HTTP_403_FORBIDDEN)
+
+        except ObjectDoesNotExist:
+            return Response({'message': 'post does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+        post.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)

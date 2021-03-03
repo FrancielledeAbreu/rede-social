@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.authtoken.models import Token
 from .serializers import UserSerializer
 from rest_framework import status
@@ -47,6 +48,18 @@ class UserView(APIView):
     def get(self, request):
         queryset = User.objects.all()
         serializer = UserSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+class UserNameView(APIView):
+    def get(self, request,  username: str):
+        try:
+            queryset = User.objects.get(username=username)
+            serializer = UserSerializer(queryset)
+
+        except ObjectDoesNotExist:
+            return Response({'message': 'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
         return Response(serializer.data)
 
 
