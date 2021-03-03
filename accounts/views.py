@@ -51,6 +51,9 @@ class UserView(APIView):
 
 
 class UserIdView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def get(self, request,  id: int):
         queryset = User.objects.get(id=id)
         serializer = UserSerializer(queryset)
@@ -62,6 +65,6 @@ class UserIdView(APIView):
         user_to_follow = User.objects.get(id=id)
 
         current_user = request.user
-        # ipdb.set_trace()
+
         current_user.following.add(user_to_follow)
         return Response("ok")

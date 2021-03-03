@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from .models import Comment
 from posts.models import Post
 from .serializers import CommentSerializer
+from notification.models import Notification
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 import ipdb
@@ -36,6 +37,9 @@ class CommentIdView(APIView):
 
         comment = Comment.objects.get_or_create(
             **request.data, author=current_user, post=post)[0]
+
+        notification = Notification.objects.create(user=post.author, author_id=current_user.id,
+                                                   message_type="Like", text=f'Você recebeu um like de {current_user.username}')
 
         serializer = CommentSerializer(comment)
 
