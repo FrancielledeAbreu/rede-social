@@ -5,4 +5,4 @@ from django.test import TestCase
 
 class TestExample(TestCase):
     def test_example(self):
-        self.assertTrue(True)
+        self.assertTrue(False)
