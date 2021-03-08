@@ -10,6 +10,3 @@ class User(AbstractUser):
     )
 
     type = models.CharField(max_length=255)
-
-   # simetrico//
-    # friends = models.ManyToManyField('self')

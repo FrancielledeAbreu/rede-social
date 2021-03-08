@@ -18,14 +18,12 @@ class TestUserModel(TestCase):
             'type': 'Company'
         }
 
-    def test_user_create(self):
+    def test_create(self):
         teste = User.objects.create_user(**self.teste_data)
         self.assertEqual(teste.username, self.teste_data['username'])
         self.assertEqual(teste.type, self.teste_data['type'])
-        self.assertEqual(len(teste.followers.all()), 0)
-        self.assertEqual(len(teste.following.all()), 0)
 
-    def test_following_user(self):
+    def test_following(self):
         teste = User.objects.create_user(**self.teste_data)
         teste2 = User.objects.create_user(**self.teste2_data)
         teste.following.add(teste2)
@@ -33,7 +31,7 @@ class TestUserModel(TestCase):
         self.assertEqual(len(teste2.following.all()), 0)
         self.assertEqual(len(teste.followers.all()), 0)
 
-    def test_username_is_unique(self):
+    def test_username_unique(self):
         User.objects.create_user(**self.teste_data)
 
         with self.assertRaises(IntegrityError):
