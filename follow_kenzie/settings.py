@@ -32,19 +32,21 @@ ALLOWED_HOSTS = ['follow-kenzie.herokuapp.com', 'localhost']
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
     'django.contrib.auth',
+    'accounts',
+    'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'accounts',
+    'rest_framework.authtoken',
     'posts',
     'comments',
     'likes',
     'notification',
     'guardian',
-    'rest_framework.authtoken'
+
+
 ]
 
 MIDDLEWARE = [

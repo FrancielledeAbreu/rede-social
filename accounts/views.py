@@ -9,7 +9,10 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.authtoken.models import Token
 from .serializers import UserSerializer
 from rest_framework import status
+from rest_framework.viewsets import GenericViewSet
+from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin
 from .models import User
+from django.shortcuts import get_object_or_404
 import ipdb
 
 
@@ -44,34 +47,32 @@ class LoginView(APIView):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
-class UserView(APIView):
-    def get(self, request):
-        queryset = User.objects.all()
-        serializer = UserSerializer(queryset, many=True)
+class UserView(GenericViewSet,
+               RetrieveModelMixin,
+               ListModelMixin):
+
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class UserNameView(GenericViewSet,
+                   RetrieveModelMixin):
+    def retrieve(self, request, *args, **kwargs):
+
+        open_sale = get_object_or_404(User,
+                                      username=kwargs['username'])
+
+        serializer = UserSerializer(open_sale)
         return Response(serializer.data)
 
-
-class UserNameView(APIView):
-    def get(self, request,  username: str):
-        try:
-            queryset = User.objects.get(username=username)
-            serializer = UserSerializer(queryset)
-
-        except ObjectDoesNotExist:
-            return Response({'message': 'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
-
-        return Response(serializer.data)
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    lookup_url_kwarg = 'username'
 
 
 class UserIdView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-
-    def get(self, request,  id: int):
-        queryset = User.objects.get(id=id)
-        serializer = UserSerializer(queryset)
-
-        return Response(serializer.data)
 
     def post(self, request,  id: int):
 

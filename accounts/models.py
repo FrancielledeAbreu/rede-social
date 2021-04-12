@@ -9,4 +9,4 @@ class User(AbstractUser):
         related_name='followers'
     )
 
-    type = models.CharField(max_length=255)
+    type = models.CharField(max_length=265)
