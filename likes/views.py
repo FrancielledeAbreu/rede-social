@@ -17,9 +17,10 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin
 
 
-class LikeIdView(GenericViewSet, CreateModelMixin):
+class LikeIdView(GenericViewSet, CreateModelMixin, DestroyModelMixin):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
+
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
 

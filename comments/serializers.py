@@ -1,9 +1,15 @@
 
 from rest_framework import serializers
 from accounts.serializers import UserSerializer
+from .models import Comment
 
 
-class CommentSerializer(serializers.Serializer):
+class CommentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Comment
+        fields = ['id', 'author', 'comment', 'image', 'commented_on']
+
     id = serializers.IntegerField(read_only=True)
     author = UserSerializer(read_only=True)
     comment = serializers.CharField()

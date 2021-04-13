@@ -1,30 +1,33 @@
-from django.shortcuts import render
-from rest_framework import serializers, status
-from rest_framework.views import APIView
+
+from rest_framework import status
 from rest_framework.response import Response
+
 from .models import Comment
 from posts.models import Post
 from .serializers import CommentSerializer
 from notification.models import Notification
+
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 
+from rest_framework.viewsets import GenericViewSet
+from rest_framework.mixins import ListModelMixin, DestroyModelMixin
 
-class CommentView(APIView):
+from django.shortcuts import get_object_or_404
+from rest_framework.decorators import action
+
+
+class CommentView(GenericViewSet,
+                  ListModelMixin, DestroyModelMixin):
+
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        queryset = Comment.objects.all()
-        serializer = CommentSerializer(queryset, many=True)
-        return Response(serializer.data)
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
 
-
-class CommentIdView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request,  id: int):
+    @action(detail=True, methods=['post'])
+    def new(self, request, pk):
 
         serializer = CommentSerializer(data=request.data)
 
@@ -32,7 +35,7 @@ class CommentIdView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         current_user = request.user
-        post = Post.objects.get(id=id)
+        post = get_object_or_404(Post, id=pk)
 
         comment = Comment.objects.get_or_create(
             **request.data, author=current_user, post=post)[0]
@@ -43,3 +46,12 @@ class CommentIdView(APIView):
         serializer = CommentSerializer(comment)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        if not instance.author.id == request.user.id:
+            return Response({'errors': 'you are not author of this comment'}, status=status.HTTP_403_FORBIDDEN)
+
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
