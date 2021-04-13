@@ -1,41 +1,70 @@
-from django.shortcuts import render
-from rest_framework import serializers, status
+
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django.core.exceptions import ObjectDoesNotExist
+
 from .models import Post
 from .serializers import PostSerializer
+
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from guardian.shortcuts import assign_perm
-from django.core.exceptions import ObjectDoesNotExist
+
 import ipdb
 
+from rest_framework.viewsets import GenericViewSet
+from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin
 
-class PostView(APIView):
+
+class PostView(GenericViewSet, ListModelMixin, CreateModelMixin, UpdateModelMixin, DestroyModelMixin):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        queryset = Post.objects.all().filter(private=False)
-        serializer = PostSerializer(queryset, many=True)
-        return Response(serializer.data)
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
 
-    def post(self, request):
-
-        serializer = PostSerializer(data=request.data)
-
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    def create(self, request, *args, **kwargs):
         current_user = request.user
 
         post = Post.objects.get_or_create(
             **request.data,  author=current_user)[0]
 
-        assign_perm('author', current_user, post)
         serializer = PostSerializer(post)
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        assign_perm('author', current_user, post)
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def update(self, request, *args, **kwargs):
+
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+
+        if not request.user.has_perm('posts.author', instance):
+            return Response({'errors': 'you are not author of this post'}, status=status.HTTP_403_FORBIDDEN)
+
+        serializer = self.get_serializer(
+            instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        if not request.user.has_perm('posts.author', instance):
+            return Response({'errors': 'you are not author of this post'}, status=status.HTTP_403_FORBIDDEN)
+
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class PostPrivateView(APIView):

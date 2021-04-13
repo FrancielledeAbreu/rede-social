@@ -3,9 +3,16 @@ from rest_framework import serializers
 from accounts.serializers import UserSerializer
 from comments.serializers import CommentSerializer
 from likes.serializers import LikeSerializer
+from .models import Post
 
 
-class PostSerializer(serializers.Serializer):
+class PostSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Post
+        fields = ['id', 'author', 'title', 'description',
+                  'image', 'posted_on', 'private', 'comment', 'like']
+
     id = serializers.IntegerField(read_only=True)
     author = UserSerializer(read_only=True)
     title = serializers.CharField()
