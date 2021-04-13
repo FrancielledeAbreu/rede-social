@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
-from .views import AccountView, LoginView, UserView, UserIdView,  UserNameView
+from .views import AccountView, LoginView, UserView,   UserNameView
 
 urlpatterns = [
     path('accounts/', AccountView.as_view()),
@@ -10,4 +10,4 @@ urlpatterns = [
 router = DefaultRouter()
 router.register(r'members', UserView)
 router.register(r'members/search', UserNameView)
-urlpatterns = router.urls
+urlpatterns += router.urls

@@ -13,6 +13,7 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin
 from .models import User
 from django.shortcuts import get_object_or_404
+from rest_framework.decorators import action
 import ipdb
 
 
@@ -49,7 +50,37 @@ class LoginView(APIView):
 
 class UserView(GenericViewSet,
                RetrieveModelMixin,
-               ListModelMixin):
+               ListModelMixin,
+               CreateModelMixin):
+
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    @action(detail=True, methods=['post'])
+    def follow(self, request, pk):
+
+        user_to_follow = get_object_or_404(User, id=pk)
+
+        current_user = request.user
+
+        current_user.following.add(user_to_follow)
+
+        return Response(f'{request.user.username} começou a seguir {user_to_follow.username}')
+
+    @action(detail=True, methods=['post'])
+    def unfollow(self, request, pk):
+
+        user_to_follow = get_object_or_404(User, id=pk)
+
+        current_user = request.user
+
+        if len(current_user.following.filter(id=pk)) > 0:
+
+            current_user.following.remove(user_to_follow)
+        else:
+            return Response(f'{request.user.username} você não segue {user_to_follow.username}')
+
+        return Response(f'{request.user.username} deixou de seguir {user_to_follow.username}')
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -57,8 +88,9 @@ class UserView(GenericViewSet,
 
 class UserNameView(GenericViewSet,
                    RetrieveModelMixin):
-    def retrieve(self, request, *args, **kwargs):
 
+    def retrieve(self, request, *args, **kwargs):
+        print(*args, 'fsdf')
         open_sale = get_object_or_404(User,
                                       username=kwargs['username'])
 
@@ -68,17 +100,3 @@ class UserNameView(GenericViewSet,
     queryset = User.objects.all()
     serializer_class = UserSerializer
     lookup_url_kwarg = 'username'
-
-
-class UserIdView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request,  id: int):
-
-        user_to_follow = User.objects.get(id=id)
-
-        current_user = request.user
-
-        current_user.following.add(user_to_follow)
-        return Response("ok")
