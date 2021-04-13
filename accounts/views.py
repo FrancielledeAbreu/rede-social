@@ -1,20 +1,22 @@
-import re
-from django.shortcuts import render
+
 from rest_framework.views import APIView
+from rest_framework.viewsets import GenericViewSet
 from rest_framework.response import Response
-from django.contrib.auth import authenticate
+from rest_framework import status
+from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin
+
+from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
-from django.core.exceptions import ObjectDoesNotExist
-from rest_framework.authtoken.models import Token
+
+
 from .serializers import UserSerializer
-from rest_framework import status
-from rest_framework.viewsets import GenericViewSet
-from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin
 from .models import User
+
+
 from django.shortcuts import get_object_or_404
+from django.contrib.auth import authenticate
 from rest_framework.decorators import action
-import ipdb
 
 
 class AccountView(APIView):
@@ -51,10 +53,44 @@ class LoginView(APIView):
 class UserView(GenericViewSet,
                RetrieveModelMixin,
                ListModelMixin,
-               CreateModelMixin):
+               CreateModelMixin,
+               UpdateModelMixin,
+               DestroyModelMixin):
 
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
+
+# somente o user logado pode editar e deletar sua conta
+
+    def update(self, request, *args, **kwargs):
+
+        if int(kwargs['pk']) == request.user.id:
+
+            partial = kwargs.pop('partial', False)
+
+            instance = self.get_object()
+
+            serializer = self.get_serializer(
+                instance, data=request.data, partial=partial)
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+
+            if getattr(instance, '_prefetched_objects_cache', None):
+                # If 'prefetch_related' has been applied to a queryset, we need to
+                # forcibly invalidate the prefetch cache on the instance.
+                instance._prefetched_objects_cache = {}
+
+            return Response(serializer.data)
+
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+    def destroy(self, request, *args, **kwargs):
+
+        if int(kwargs['pk']) == request.user.id:
+            instance = self.get_object()
+            self.perform_destroy(instance)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
 
     @action(detail=True, methods=['post'])
     def follow(self, request, pk):
@@ -90,7 +126,7 @@ class UserNameView(GenericViewSet,
                    RetrieveModelMixin):
 
     def retrieve(self, request, *args, **kwargs):
-        print(*args, 'fsdf')
+
         open_sale = get_object_or_404(User,
                                       username=kwargs['username'])
 
