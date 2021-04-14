@@ -11,6 +11,7 @@ from rest_framework.authentication import TokenAuthentication
 
 
 from .serializers import UserSerializer
+from .paginations import Pagination
 from .models import User
 
 
@@ -120,6 +121,7 @@ class UserView(GenericViewSet,
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    pagination_class = Pagination
 
 
 class UserNameView(GenericViewSet,
