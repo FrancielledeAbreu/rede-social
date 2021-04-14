@@ -1,23 +1,32 @@
 
-from rest_framework import status
-from rest_framework.views import APIView
+
 from rest_framework.response import Response
+
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
+
 from .models import Notification
 from .serializers import MessageSerializer
-from django.core.exceptions import ObjectDoesNotExist
-import ipdb
+
+from rest_framework.viewsets import GenericViewSet
+from rest_framework.mixins import ListModelMixin,  RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin
 
 
-class NotificationView(APIView):
+class NotificationView(GenericViewSet, ListModelMixin, UpdateModelMixin, DestroyModelMixin, RetrieveModelMixin):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        try:
-            queryset = Notification.objects.filter(user_id=request.user.id)
-            serializer = MessageSerializer(queryset, many=True)
-            return Response(serializer.data)
-        except ObjectDoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+    queryset = Notification.objects.all()
+    serializer_class = MessageSerializer
+
+    def list(self, request, *args, **kwargs):
+        #  apenas as notificações do user logado
+        queryset = Notification.objects.filter(user_id=request.user.id)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
