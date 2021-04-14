@@ -1,8 +1,7 @@
-from django.urls import path
-from .views import CommentView, CommentIdView
+from rest_framework.routers import DefaultRouter
+from .views import CommentView
 
-urlpatterns = [
-    path('timeline/comments/', CommentView.as_view()),
-    path('timeline/comments/<int:id>/', CommentIdView.as_view())
 
-]
+router = DefaultRouter()
+router.register(r'comments', CommentView)
+urlpatterns = router.urls
