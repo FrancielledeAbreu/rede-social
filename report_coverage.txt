@@ -1,0 +1,69 @@
+Name                                      Stmts   Miss  Cover   Missing
+-----------------------------------------------------------------------
+accounts/__init__.py                          0      0   100%
+accounts/admin.py                             1      0   100%
+accounts/apps.py                              3      3     0%   1-5
+accounts/migrations/0001_initial.py           9      0   100%
+accounts/migrations/__init__.py               0      0   100%
+accounts/models.py                            6      0   100%
+accounts/paginations.py                       6      0   100%
+accounts/serializers.py                      10      0   100%
+accounts/tests.py                            23      0   100%
+accounts/urls.py                              8      0   100%
+accounts/views.py                            77     42    45%   25-33, 38-51, 68-86, 90-94, 99-105, 110-120, 132-136
+comments/__init__.py                          0      0   100%
+comments/admin.py                             1      0   100%
+comments/apps.py                              3      3     0%   1-5
+comments/migrations/0001_initial.py           7      0   100%
+comments/migrations/__init__.py               0      0   100%
+comments/models.py                           11      1    91%   15
+comments/serializers.py                      12      0   100%
+comments/tests.py                            16      0   100%
+comments/urls.py                              5      0   100%
+comments/views.py                            34     14    59%   32-48, 51-57
+follow_kenzie/__init__.py                     0      0   100%
+follow_kenzie/asgi.py                         4      4     0%   10-16
+follow_kenzie/settings.py                    28      3    89%   102, 116-121
+follow_kenzie/urls.py                         3      0   100%
+follow_kenzie/wsgi.py                         4      4     0%   10-16
+likes/__init__.py                             0      0   100%
+likes/admin.py                                1      0   100%
+likes/apps.py                                 3      3     0%   1-5
+likes/migrations/0001_initial.py              7      0   100%
+likes/migrations/__init__.py                  0      0   100%
+likes/models.py                               9      1    89%   13
+likes/serializers.py                          9      0   100%
+likes/tests.py                               15      0   100%
+likes/urls.py                                 5      0   100%
+likes/views.py                               26      6    77%   30-40
+manage.py                                    12      2    83%   12-13
+notification/__init__.py                      0      0   100%
+notification/admin.py                         1      0   100%
+notification/apps.py                          3      3     0%   1-5
+notification/migrations/0001_initial.py       7      0   100%
+notification/migrations/__init__.py           0      0   100%
+notification/models.py                       11      1    91%   14
+notification/serializers.py                  14      0   100%
+notification/tests.py                        19      0   100%
+notification/urls.py                          6      0   100%
+notification/views.py                        20      7    65%   24-32
+posts/__init__.py                             0      0   100%
+posts/admin.py                                1      0   100%
+posts/apps.py                                 3      3     0%   1-5
+posts/migrations/0001_initial.py              7      0   100%
+posts/migrations/__init__.py                  0      0   100%
+posts/models.py                              14      1    93%   21
+posts/serializers.py                         19      0   100%
+posts/tests.py                               16      0   100%
+posts/urls.py                                 7      0   100%
+posts/views.py                               65     37    43%   28-38, 42-58, 61-67, 75-94, 102-107
+reports/__init__.py                           0      0   100%
+reports/admin.py                              1      0   100%
+reports/apps.py                               3      3     0%   1-5
+reports/migrations/__init__.py                0      0   100%
+reports/models.py                             1      0   100%
+reports/tests.py                              1      0   100%
+reports/urls.py                               3      0   100%
+reports/views.py                             17     11    35%   7-21
+-----------------------------------------------------------------------
+TOTAL                                       597    152    75%
