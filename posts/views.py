@@ -16,6 +16,8 @@ import ipdb
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin
 
+from cache.timeline import TimelineCache
+
 
 class PostView(GenericViewSet, ListModelMixin, CreateModelMixin, UpdateModelMixin, DestroyModelMixin):
     authentication_classes = [TokenAuthentication]
@@ -24,8 +26,30 @@ class PostView(GenericViewSet, ListModelMixin, CreateModelMixin, UpdateModelMixi
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
+    def list(self, request, *args, **kwargs):
+
+        timeline_cache = TimelineCache(request.user)
+        timeline = timeline_cache.get_timeline()
+
+        if timeline:
+            return Response(timeline)
+
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        timeline_cache.set_timeline(serializer.data)
+        return Response(serializer.data)
+
     def create(self, request, *args, **kwargs):
         current_user = request.user
+
+        timeline_cache = TimelineCache(current_user)
+        timeline_cache.clear()
 
         post = Post.objects.get_or_create(
             **request.data,  author=current_user)[0]
@@ -55,6 +79,9 @@ class PostView(GenericViewSet, ListModelMixin, CreateModelMixin, UpdateModelMixi
             # forcibly invalidate the prefetch cache on the instance.
             instance._prefetched_objects_cache = {}
 
+        timeline_cache = TimelineCache(request.user)
+        timeline_cache.clear()
+
         return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
@@ -64,6 +91,9 @@ class PostView(GenericViewSet, ListModelMixin, CreateModelMixin, UpdateModelMixi
             return Response({'errors': 'you are not author of this post'}, status=status.HTTP_403_FORBIDDEN)
 
         self.perform_destroy(instance)
+
+        timeline_cache = TimelineCache(request.user)
+        timeline_cache.clear()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

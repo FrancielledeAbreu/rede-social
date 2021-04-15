@@ -16,6 +16,8 @@ from rest_framework.mixins import ListModelMixin, DestroyModelMixin
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
 
+from cache.timeline import TimelineCache
+
 
 class CommentView(GenericViewSet,
                   ListModelMixin, DestroyModelMixin):
@@ -42,6 +44,9 @@ class CommentView(GenericViewSet,
 
         notification = Notification.objects.create(user=post.author, author_id=current_user.id,
                                                    message_type="Comentario", text=f'Você recebeu um comentário de {current_user.username} no Post {post.title}')
+
+        timeline_cache = TimelineCache(post.author)
+        timeline_cache.clear()
 
         serializer = CommentSerializer(comment)
 
