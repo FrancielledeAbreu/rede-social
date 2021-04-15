@@ -23,5 +23,6 @@ urlpatterns = [
     path('api/', include('comments.urls')),
     path('api/', include('likes.urls')),
     path('api/', include('notification.urls')),
+    path('api/', include('reports.urls')),
 
 ]
