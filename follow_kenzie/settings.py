@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'likes',
     'notification',
     'guardian',
-    'reports'
+    'reports',
+    'channels',
 ]
 
 CACHES = {
@@ -58,6 +59,15 @@ CACHES = {
     }
 }
 
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('redis', 6379)],
+        },
+    },
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -92,8 +102,6 @@ TEMPLATES = [
         },
     },
 ]
-
-WSGI_APPLICATION = 'follow_kenzie.wsgi.application'
 
 
 # Database
@@ -148,6 +156,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+WSGI_APPLICATION = 'follow_kenzie.wsgi.application'
+
+ASGI_APPLICATION = 'follow_kenzie.asgi.application'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
