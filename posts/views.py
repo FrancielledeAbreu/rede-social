@@ -34,16 +34,14 @@ class PostView(GenericViewSet, ListModelMixin, CreateModelMixin, UpdateModelMixi
         if timeline:
             return Response(timeline)
 
-        queryset = self.filter_queryset(self.get_queryset())
+        queryset = Post.objects.all().filter(private=False)
 
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        timeline_cache.set_timeline(serializer.data)
-        return Response(serializer.data)
+        if len(queryset) > 0:
+            serializer = PostSerializer(queryset, many=True)
+            timeline_cache.set_timeline(serializer.data)
+            return Response(serializer.data)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
     def create(self, request, *args, **kwargs):
         current_user = request.user
@@ -59,7 +57,7 @@ class PostView(GenericViewSet, ListModelMixin, CreateModelMixin, UpdateModelMixi
         assign_perm('author', current_user, post)
 
         timeline_cache.set_timeline(
-            PostSerializer(Post.objects.all(), many=True).data)
+            PostSerializer(Post.objects.all().filter(private=False), many=True).data)
 
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
@@ -86,7 +84,7 @@ class PostView(GenericViewSet, ListModelMixin, CreateModelMixin, UpdateModelMixi
             instance._prefetched_objects_cache = {}
 
         timeline_cache.set_timeline(
-            PostSerializer(Post.objects.all(), many=True).data)
+            PostSerializer(Post.objects.all().filter(private=False), many=True).data)
 
         return Response(serializer.data)
 

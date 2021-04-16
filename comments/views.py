@@ -56,7 +56,7 @@ class CommentView(GenericViewSet,
         serializer = CommentSerializer(comment)
 
         timeline_cache.set_timeline(
-            PostSerializer(Post.objects.all(), many=True).data)
+            PostSerializer(Post.objects.all().filter(private=False), many=True).data)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
