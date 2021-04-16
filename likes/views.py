@@ -17,6 +17,7 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin
 
 from cache.timeline import TimelineCache
+from cache.notification_cache import NotificationCache
 
 
 class LikeIdView(GenericViewSet, CreateModelMixin, DestroyModelMixin):
@@ -41,5 +42,8 @@ class LikeIdView(GenericViewSet, CreateModelMixin, DestroyModelMixin):
 
         timeline_cache = TimelineCache()
         timeline_cache.clear()
+
+        notification_cache = NotificationCache(post.author)
+        notification_cache.clear()
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)

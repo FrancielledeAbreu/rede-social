@@ -17,6 +17,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
 
 from cache.timeline import TimelineCache
+from cache.notification_cache import NotificationCache
 
 
 class CommentView(GenericViewSet,
@@ -47,6 +48,9 @@ class CommentView(GenericViewSet,
 
         timeline_cache = TimelineCache()
         timeline_cache.clear()
+
+        notification_cache = NotificationCache(post.author)
+        notification_cache.clear()
 
         serializer = CommentSerializer(comment)
 
