@@ -28,7 +28,7 @@ class PostView(GenericViewSet, ListModelMixin, CreateModelMixin, UpdateModelMixi
 
     def list(self, request, *args, **kwargs):
 
-        timeline_cache = TimelineCache(request.user)
+        timeline_cache = TimelineCache()
         timeline = timeline_cache.get_timeline()
 
         if timeline:
@@ -48,7 +48,7 @@ class PostView(GenericViewSet, ListModelMixin, CreateModelMixin, UpdateModelMixi
     def create(self, request, *args, **kwargs):
         current_user = request.user
 
-        timeline_cache = TimelineCache(current_user)
+        timeline_cache = TimelineCache()
         timeline_cache.clear()
 
         post = Post.objects.get_or_create(
@@ -79,7 +79,7 @@ class PostView(GenericViewSet, ListModelMixin, CreateModelMixin, UpdateModelMixi
             # forcibly invalidate the prefetch cache on the instance.
             instance._prefetched_objects_cache = {}
 
-        timeline_cache = TimelineCache(request.user)
+        timeline_cache = TimelineCache()
         timeline_cache.clear()
 
         return Response(serializer.data)
@@ -92,7 +92,7 @@ class PostView(GenericViewSet, ListModelMixin, CreateModelMixin, UpdateModelMixi
 
         self.perform_destroy(instance)
 
-        timeline_cache = TimelineCache(request.user)
+        timeline_cache = TimelineCache()
         timeline_cache.clear()
         return Response(status=status.HTTP_204_NO_CONTENT)
 

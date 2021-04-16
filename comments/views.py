@@ -45,7 +45,7 @@ class CommentView(GenericViewSet,
         notification = Notification.objects.create(user=post.author, author_id=current_user.id,
                                                    message_type="Comentario", text=f'Você recebeu um comentário de {current_user.username} no Post {post.title}')
 
-        timeline_cache = TimelineCache(post.author)
+        timeline_cache = TimelineCache()
         timeline_cache.clear()
 
         serializer = CommentSerializer(comment)

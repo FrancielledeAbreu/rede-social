@@ -8,14 +8,16 @@ from accounts.models import User
 class TimelineConsumer(JsonWebsocketConsumer):
     def connect(self):
 
-        print('aquvfdvgdfgvdfvdfvdfvdfvdvi', self.scope)
+        # current_user_id = int(
+        #     self.scope['query_string'].decode("utf-8").split('=')[1])
+
         self.accept()
 
         async_to_sync(self.channel_layer.group_add)(
             'posts', self.channel_name)
 
-        user = User.objects.get(id=70)
-        timeline_cache = TimelineCache(user)
+        # user = User.objects.get(id=current_user_id)
+        timeline_cache = TimelineCache()
         current_timeline = timeline_cache.get_timeline()
 
         self.send_json({'timeline': current_timeline})
