@@ -46,4 +46,7 @@ class LikeIdView(GenericViewSet, CreateModelMixin, DestroyModelMixin):
         notification_cache = NotificationCache(post.author)
         notification_cache.clear()
 
+        timeline_cache.set_timeline(
+            PostSerializer(Post.objects.all(), many=True).data)
+
         return Response(serializer.data, status=status.HTTP_201_CREATED)

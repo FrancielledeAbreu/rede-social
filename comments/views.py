@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from .models import Comment
 from posts.models import Post
 from .serializers import CommentSerializer
+from posts.serializers import PostSerializer
 from notification.models import Notification
 
 from rest_framework.permissions import IsAuthenticated
@@ -53,6 +54,9 @@ class CommentView(GenericViewSet,
         notification_cache.clear()
 
         serializer = CommentSerializer(comment)
+
+        timeline_cache.set_timeline(
+            PostSerializer(Post.objects.all(), many=True).data)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 

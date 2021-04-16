@@ -58,6 +58,9 @@ class PostView(GenericViewSet, ListModelMixin, CreateModelMixin, UpdateModelMixi
 
         assign_perm('author', current_user, post)
 
+        timeline_cache.set_timeline(
+            PostSerializer(Post.objects.all(), many=True).data)
+
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
@@ -69,6 +72,9 @@ class PostView(GenericViewSet, ListModelMixin, CreateModelMixin, UpdateModelMixi
         if not request.user.has_perm('posts.author', instance):
             return Response({'errors': 'you are not author of this post'}, status=status.HTTP_403_FORBIDDEN)
 
+        timeline_cache = TimelineCache()
+        timeline_cache.clear()
+
         serializer = self.get_serializer(
             instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
@@ -79,8 +85,8 @@ class PostView(GenericViewSet, ListModelMixin, CreateModelMixin, UpdateModelMixi
             # forcibly invalidate the prefetch cache on the instance.
             instance._prefetched_objects_cache = {}
 
-        timeline_cache = TimelineCache()
-        timeline_cache.clear()
+        timeline_cache.set_timeline(
+            PostSerializer(Post.objects.all(), many=True).data)
 
         return Response(serializer.data)
 
