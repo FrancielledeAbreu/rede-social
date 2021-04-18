@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'guardian',
     'reports',
     'channels',
+    'seeds',
 ]
 
 CACHES = {
