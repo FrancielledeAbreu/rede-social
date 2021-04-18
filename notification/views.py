@@ -30,7 +30,8 @@ class NotificationView(GenericViewSet, ListModelMixin, UpdateModelMixin, Destroy
             return Response(notifications)
 
         #  apenas as notificações do user logado
-        queryset = Notification.objects.filter(user_id=request.user.id)
+        queryset = Notification.objects.filter(
+            user_id=request.user.id).filter(read=False)
 
         page = self.paginate_queryset(queryset)
         if page is not None:

@@ -1,0 +1,25 @@
+USERNAME;TYPE;PASSWORD;TITLE;DESCRIPTION;IMAGE;PRIVATE
+Renato;client;1234;Bom dia Brasil; Um ótimo dia a todos;https://images.unsplash.com/photo-1561239905-d620f213c5f7?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=752&q=80;False
+Renato;client;1234;Olá Mundo; Mais um dia na Terra;https://images.unsplash.com/photo-1476304884326-cd2c88572c5f?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8d29ybGR8ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60;False
+Renato;client;1234;Meu trabalho; Hoje tive um ótimo dia de trabalho;https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8d29ya3xlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60;True
+Renato;client;1234;Minha Familia; Está é minha família;https://images.unsplash.com/photo-1511895426328-dc8714191300?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80;True
+Renato;client;1234;Café da manhã; Um bom café da manhã para começar bem o dia;https://images.unsplash.com/photo-1489516917245-377a51e7b292?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=754&q=80;False
+Renato;client;1234;Exercícios; Gosto de fazer Exercícios a tarde;https://images.unsplash.com/photo-1552674605-db6ffd4facb5?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80;False
+Joana;client;1234;Trabalho; Gostaria de compartilhar meu trabalho;https://images.unsplash.com/photo-1552664730-d307ca884978?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80;False
+Joana;client;1234;Tarefa Concluida; Alegria de entregar um bom trabalho;https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=751&q=80;False
+Joana;client;1234;Felicidade;Meu casamento;https://images.unsplash.com/photo-1469371670807-013ccf25f16a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80;True
+Joana;client;1234;Minha Familia hoje; estamos comemorando a vida;https://images.unsplash.com/photo-1606787365321-53019dba74d8?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80;True
+Joana;client;1234;Almoço; Um bom almoço a todos;https://images.unsplash.com/photo-1577308856961-8e9ec50d0c67?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80;False
+Joana;client;1234;Equipe; Um trabalho em equipe;https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80;False
+Mariano;client;1234;Livro; Otimo livro;https://images.unsplash.com/photo-1557131380-85ebd64597a1?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80;False
+Mariano;client;1234;Academia; ótimo exercício;https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80;True
+Mariano;client;1234;Minha Familia hoje; estamos comemorando a vida;https://images.unsplash.com/photo-1533777419517-3e4017e2e15a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80;True
+Mariano;client;1234;Passeio; Um bom passeio;https://images.unsplash.com/photo-1559145626-4bb0d8e510d5?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80;False
+Mariano;client;1234;Viagem; Uma linda viagem;https://images.unsplash.com/photo-1508672019048-805c876b67e2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=793&q=80;False
+Fernanda;client;1234;Cidade; Cidade Maravilhosa;https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80;False
+Fernanda;client;1234;Jardim; Jardim do meu condomínio;https://images.unsplash.com/photo-1550948390-6eb7fa773072?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=753&q=80;True
+Fernanda;client;1234;Formatura; TBT minh classe;https://images.unsplash.com/photo-1519070994522-88c6b756330e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=601&q=80;True
+Fernanda;client;1234;Casa; Minha casa nova;https://images.unsplash.com/photo-1449844908441-8829872d2607?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=750&q=80;False
+Fernanda;client;1234;Computador; meu escritório;https://images.unsplash.com/photo-1547586696-ea22b4d4235d?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80;False
+
+
