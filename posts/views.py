@@ -28,27 +28,25 @@ class PostView(GenericViewSet, ListModelMixin, CreateModelMixin, UpdateModelMixi
 
     def list(self, request, *args, **kwargs):
 
-        timeline_cache = TimelineCache(request.user)
+        timeline_cache = TimelineCache()
         timeline = timeline_cache.get_timeline()
 
         if timeline:
             return Response(timeline)
 
-        queryset = self.filter_queryset(self.get_queryset())
+        queryset = Post.objects.all().filter(private=False)
 
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        timeline_cache.set_timeline(serializer.data)
-        return Response(serializer.data)
+        if len(queryset) > 0:
+            serializer = PostSerializer(queryset, many=True)
+            timeline_cache.set_timeline(serializer.data)
+            return Response(serializer.data)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
     def create(self, request, *args, **kwargs):
         current_user = request.user
 
-        timeline_cache = TimelineCache(current_user)
+        timeline_cache = TimelineCache()
         timeline_cache.clear()
 
         post = Post.objects.get_or_create(
@@ -57,6 +55,9 @@ class PostView(GenericViewSet, ListModelMixin, CreateModelMixin, UpdateModelMixi
         serializer = PostSerializer(post)
 
         assign_perm('author', current_user, post)
+
+        timeline_cache.set_timeline(
+            PostSerializer(Post.objects.all().filter(private=False), many=True).data)
 
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
@@ -69,6 +70,9 @@ class PostView(GenericViewSet, ListModelMixin, CreateModelMixin, UpdateModelMixi
         if not request.user.has_perm('posts.author', instance):
             return Response({'errors': 'you are not author of this post'}, status=status.HTTP_403_FORBIDDEN)
 
+        timeline_cache = TimelineCache()
+        timeline_cache.clear()
+
         serializer = self.get_serializer(
             instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
@@ -79,8 +83,8 @@ class PostView(GenericViewSet, ListModelMixin, CreateModelMixin, UpdateModelMixi
             # forcibly invalidate the prefetch cache on the instance.
             instance._prefetched_objects_cache = {}
 
-        timeline_cache = TimelineCache(request.user)
-        timeline_cache.clear()
+        timeline_cache.set_timeline(
+            PostSerializer(Post.objects.all().filter(private=False), many=True).data)
 
         return Response(serializer.data)
 
@@ -92,7 +96,7 @@ class PostView(GenericViewSet, ListModelMixin, CreateModelMixin, UpdateModelMixi
 
         self.perform_destroy(instance)
 
-        timeline_cache = TimelineCache(request.user)
+        timeline_cache = TimelineCache()
         timeline_cache.clear()
         return Response(status=status.HTTP_204_NO_CONTENT)
 

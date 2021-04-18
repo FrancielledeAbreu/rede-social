@@ -17,6 +17,7 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin
 
 from cache.timeline import TimelineCache
+from cache.notification_cache import NotificationCache
 
 
 class LikeIdView(GenericViewSet, CreateModelMixin, DestroyModelMixin):
@@ -39,7 +40,13 @@ class LikeIdView(GenericViewSet, CreateModelMixin, DestroyModelMixin):
                                                    message_type="Like", text=f'Você recebeu um like de {current_user.username} no Post {post.title}')
         serializer = LikeSerializer(like)
 
-        timeline_cache = TimelineCache(post.author)
+        timeline_cache = TimelineCache()
         timeline_cache.clear()
+
+        notification_cache = NotificationCache(post.author)
+        notification_cache.clear()
+
+        timeline_cache.set_timeline(
+            PostSerializer(Post.objects.all().filter(private=False), many=True).data)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)

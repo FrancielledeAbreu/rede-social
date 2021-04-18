@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from .models import Comment
 from posts.models import Post
 from .serializers import CommentSerializer
+from posts.serializers import PostSerializer
 from notification.models import Notification
 
 from rest_framework.permissions import IsAuthenticated
@@ -17,6 +18,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
 
 from cache.timeline import TimelineCache
+from cache.notification_cache import NotificationCache
 
 
 class CommentView(GenericViewSet,
@@ -45,10 +47,16 @@ class CommentView(GenericViewSet,
         notification = Notification.objects.create(user=post.author, author_id=current_user.id,
                                                    message_type="Comentario", text=f'Você recebeu um comentário de {current_user.username} no Post {post.title}')
 
-        timeline_cache = TimelineCache(post.author)
+        timeline_cache = TimelineCache()
         timeline_cache.clear()
 
+        notification_cache = NotificationCache(post.author)
+        notification_cache.clear()
+
         serializer = CommentSerializer(comment)
+
+        timeline_cache.set_timeline(
+            PostSerializer(Post.objects.all().filter(private=False), many=True).data)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 

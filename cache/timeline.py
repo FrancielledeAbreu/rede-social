@@ -4,8 +4,9 @@ import json
 
 
 class TimelineCache():
-    def __init__(self, user):
-        self.key = f'org:{user.id}:{user.username}'
+    def __init__(self):
+        # self.key = f'{user.id}:{user.username}'
+        self.key = 'timeline_public'
         timeline = cache.get(self.key)
 
         if timeline == 'null' or timeline == None:

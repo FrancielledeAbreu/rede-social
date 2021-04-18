@@ -11,6 +11,8 @@ from .serializers import MessageSerializer
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import ListModelMixin,  RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin
 
+from cache.notification_cache import NotificationCache
+
 
 class NotificationView(GenericViewSet, ListModelMixin, UpdateModelMixin, DestroyModelMixin, RetrieveModelMixin):
     authentication_classes = [TokenAuthentication]
@@ -20,6 +22,13 @@ class NotificationView(GenericViewSet, ListModelMixin, UpdateModelMixin, Destroy
     serializer_class = MessageSerializer
 
     def list(self, request, *args, **kwargs):
+
+        notification_cache = NotificationCache(request.user)
+        notifications = notification_cache.get_notification()
+
+        if notifications:
+            return Response(notifications)
+
         #  apenas as notificações do user logado
         queryset = Notification.objects.filter(user_id=request.user.id)
 
@@ -29,4 +38,5 @@ class NotificationView(GenericViewSet, ListModelMixin, UpdateModelMixin, Destroy
             return self.get_paginated_response(serializer.data)
 
         serializer = self.get_serializer(queryset, many=True)
+        notification_cache.set_notification(serializer.data)
         return Response(serializer.data)
