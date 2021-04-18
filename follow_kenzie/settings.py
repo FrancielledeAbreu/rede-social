@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'reports',
     'channels',
     'seeds',
+    'corsheaders',
 ]
 
 CACHES = {
@@ -78,11 +79,21 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    "https://follow-kenzie.herokuapp.com",
+    "http://localhost:8080",
+    "http://localhost:3000",
+]
+
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',  # default
     'guardian.backends.ObjectPermissionBackend',
 )
+
 
 ROOT_URLCONF = 'follow_kenzie.urls'
 
