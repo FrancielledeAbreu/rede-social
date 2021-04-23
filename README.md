@@ -11,7 +11,7 @@
 ## URL base:
 
 ```
-https://follow-kenzie.herokuapp.com/api
+localhost:8000/api
 ```
 
 # ENDPOINTS
@@ -26,7 +26,8 @@ creating user, the type of user can be a customer or company :
 {
 	"username": "Maria",
 	"password": "1234",
-	"type": "client"
+	"type": "  "type": "User"
+"
 }
 
 // RESPONSE STATUS -> HTTP 201
@@ -34,7 +35,7 @@ creating user, the type of user can be a customer or company :
 {
   "id": 1,
   "username": "Maria",
-  "type": "client"
+  "type": "User"
 }
 ```
 
@@ -62,6 +63,8 @@ getting a token for the user:
 listing the users
 
 ```
+// REQUEST
+// Header -> Authorization: Token <token>
 [
   {
     "id": 1,
@@ -110,7 +113,7 @@ base_url/members/2/
 }
 ```
 
-## GET /members/<str:username>/
+## GET /members/search/<str:username>
 
 filters users by username
 
@@ -129,7 +132,43 @@ base_url/members/Maria/
 }
 ```
 
-## POST /members/<int:user_id>/
+## PATCH /api/members/<int:user_id>/
+
+-The token `owner` must be the one corresponding to the user id
+
+update user data
+
+```
+// REQUEST
+// Header -> Authorization: Token <token>
+
+{
+	"username": "Negócios Atuais"
+}
+
+// RESPONSE STATUS -> HTTP 200
+
+ {
+  "id": 81,
+  "username": "Negócios Atuais",
+  "type": "Company"
+}
+```
+
+## DELETE /api/members/<int:user_id>/
+
+-The token `owner` must be the one corresponding to the user id
+
+```
+// REQUEST
+// Header -> Authorization: Token <token>
+
+
+// RESPONSE STATUS -> HTTP 204
+
+```
+
+## POST /members/<int:user_id>/follow/
 
 It is possible to follow another user by passing his id as parameter
 
@@ -139,7 +178,25 @@ It is possible to follow another user by passing his id as parameter
 
 // RESPONSE STATUS -> HTTP 200
 
- "OK"
+ ""João começou a seguir Renato""
+```
+
+## POST /members/<int:user_id>/unfollow/
+
+It is possible to unfollow another user by passing his id as parameter
+
+```
+// REQUEST
+// Header -> Authorization: Token <token>
+
+// RESPONSE STATUS -> HTTP 200
+
+ "João começou a seguir Renato"
+
+ If the current user does not follow the user passed by parameter:
+
+ "Renata você não segue Fer"
+
 ```
 
 ## POST /timeline/
@@ -177,9 +234,9 @@ Endpoint that allows the creation of a new post, it is possible to set privacy t
 
 ```
 
-## PUT /timeline/post/<int:post_id>/
+## PATCH /timeline/<int:post_id>/
 
-Only the user with the permission of the author can edit and delete their own posts
+`Only the user with the permission` of the author can `edit and delete` their own posts
 
 ```
 // REQUEST
@@ -210,7 +267,7 @@ Only the user with the permission of the author can edit and delete their own po
 
 ```
 
-## DELETE /timeline/post/<int:post_id>/
+## DELETE /timeline/<int:post_id>/
 
 ```
 // REQUEST
@@ -319,9 +376,9 @@ lists all public posts of registered users
 
 ```
 
-## GET /timeline/private/
+## GET /timeline/private
 
-Lists all public and also private posts of the users that the logged in user follows
+Lists all public and also private posts of the users that the `logged in user follows`
 
 ```
 // REQUEST
@@ -408,7 +465,7 @@ lists the authored posts of the logged in user
 
 ```
 
-## POST /timeline/post/<int:post_id>/
+## POST /timeline/post/<int:post_id>/like/
 
 The logged in user can like the post owner of the id, the answer will be the user data
 
@@ -429,7 +486,7 @@ The logged in user can like the post owner of the id, the answer will be the use
 
 ```
 
-## POST timeline/comments/<int:post_id>/
+## POST /comments/<int:post_id>/new/
 
 It is possible to add a new comment, it is also possible to add an image
 
@@ -457,7 +514,31 @@ It is possible to add a new comment, it is also possible to add an image
 }
 ```
 
-## GET /mynotification/
+## DELETE /comments/<int:post_id>/
+
+only the `author` of the comment
+
+```
+// REQUEST
+// Header -> Authorization: Token <token>
+
+// RESPONSE STATUS -> HTTP 204
+
+
+```
+
+## GET /comments/
+
+All comments
+
+```
+// REQUEST
+// Header -> Authorization: Token <token>
+
+// RESPONSE STATUS -> HTTP 200
+```
+
+## GET /mynotifications/
 
 the logged in user will be able to know when his followers commented or liked his published posts.
 
@@ -491,7 +572,7 @@ the logged in user will be able to know when his followers commented or liked hi
     "author_id": 4,
     "message_type": "Like",
     "created_at": "2021-03-04T14:20:40.330895Z",
-    "text": "Você recebeu um like de Mario no Post Olá Mundo",
+    "text": "Você recebeu um like de Mario no Post Férias",
     "read": false
   },
   {
@@ -504,16 +585,49 @@ the logged in user will be able to know when his followers commented or liked hi
     "author_id": 5,
     "message_type": "Comentario",
     "created_at": "2021-03-08T13:18:41.838298Z",
-    "text": "Você recebeu um comentário de José no Post Olá Mundo",
+    "text": "Você recebeu um comentário de José no Post Cidade Linda",
     "read": false
   }
 ]
 
 ```
 
+## PATCH /mynotification/<int:notification_id>/
+
+```
+// REQUEST
+// Header -> Authorization: Token <token>
+
+{ "read": true}
+
+// RESPONSE STATUS -> HTTP 200
+
+{
+  "id": 1,
+  "user": {
+    "id": 70,
+    "username": "João",
+    "type": "client"
+  },
+  "author_id": 70,
+  "message_type": "Like",
+  "created_at": "2021-04-13T01:14:40.226614Z",
+  "text": "Você recebeu um like de João no Post Olá Mundo",
+  "read": true
+}
+```
+
+## GET /reports/following/<int:user_id>/
+
+## GET /reports/followers/<int:user_id>/
+
+## GET /reports/notification/<int:user_id>/
+
+-It is possible to extract the followers report, following and my notifications through CSV files.
+
 ## Deployment
 
-- Heroku was used for deployment
+- The deployment was `partially` carried out on heroku. Testing is recommended locally.
 
 ## Database:
 
