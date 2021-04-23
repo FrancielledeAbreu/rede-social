@@ -592,7 +592,7 @@ the logged in user will be able to know when his followers commented or liked hi
 
 ```
 
-## PATCH /mynotification/<int:notification_id>/
+## PATCH /mynotifications/<int:notification_id>/
 
 ```
 // REQUEST
